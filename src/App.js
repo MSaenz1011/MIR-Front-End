@@ -8,14 +8,14 @@ import './App.css'
 
 
 //Para chequear si toDo (Linea 21) tiene algo cuando el se le pasa el const de Todo
-// {toDo && toDo.length ? '' : 'No Tasks...'}
+// 
 
 
 function App() {
 
   const [taskList, setTasklist] = useState([]);
   useEffect(() => {
-    axios.get("http://localhost:8080/api/tasks").then((res) => {
+    axios.get("https://finalonboardingback-production.up.railway.app/api/tasks").then((res) => {
       setTasklist(res.data);
     });
   }, [])
@@ -31,19 +31,26 @@ function App() {
   /////////////
   const [newTask, setNewTask] = useState('')
   const [updateData, setUpdateData] = useState('')
-
+  console.log(taskList)
   // Add task 
   //////////
+  
+  
   const addTask = () => {
     if(newTask) {
-      let num = toDo.length + 1 
+      let num = taskList.length + 1 
       
-      setTasklist([
-        ...taskList, 
-        { id: num, title: newTask, status: false }
-      ])
-
-      setNewTask('')
+      axios.post("https://finalonboardingback-production.up.railway.app/api/tasks",{
+        title:newTask,
+        status:false
+      })
+      .then((res) => {
+        setTasklist([
+          ...taskList, 
+          res.data
+        ])
+        setNewTask('')
+      });
 
     }
   }
@@ -51,21 +58,32 @@ function App() {
   // Delete task 
   //////////////
   const deleteTask = (id) => {
-    
    setTasklist(taskList.filter(task => task.id !== id))
-
+   
+   axios.delete(`https://finalonboardingback-production.up.railway.app/api/tasks/${id}`)
+   .then(() =>{
+    setTasklist(taskList.filter(task => task.id !== id))
+   })
+    
   }
 
   // Mark task as done or completed
   /////////////////////////////////
-  const markDone = (id) => {
-    
-    
-    setTasklist(taskList.map(
-      task => task.id === id 
-      ? ({ ...task, status: !task.status }) 
-      : (task) 
-    ))
+  const markDone = (task) => {
+   
+    axios.put(`https://finalonboardingback-production.up.railway.app/api/tasks/${task.id}`,{
+      title: task.title,
+      status: !task.status
+    })
+    .then((res) => {
+      setTasklist(taskList.map(
+      item => item.id === task.id 
+      ? ({ ...item, status: !item.status }) 
+      : (item),
+      res.data
+      ))
+      
+    });
 
   }
 
@@ -86,14 +104,19 @@ function App() {
   //////////////
   const updateTask = () => {
     
-    let removeOldRecord = [...taskList].filter(task => task.id !== updateData.id)
-    setTasklist([
-      ...removeOldRecord, 
-      updateData
-    ])
-    
-    setUpdateData('')
-
+    axios.put(`https://finalonboardingback-production.up.railway.app/api/tasks/${updateData.id}`, {
+      title:updateData.title,
+      status: updateData.status
+    })
+    .then((res) => {
+      let removeOldRecord = [...taskList].filter(task => task.id !== updateData.id)
+      setTasklist([
+        ...removeOldRecord, 
+        res.data
+      ]) 
+      setUpdateData('')
+      
+      });
   }
 
   return (
@@ -118,7 +141,7 @@ function App() {
       />
     )}
 
-      
+      {taskList && taskList.length ? '' : 'No Tasks...'}
   
     <ToDo
       //toDo={toDo}
