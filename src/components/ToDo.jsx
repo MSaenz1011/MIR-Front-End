@@ -6,10 +6,13 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 const ToDo = ({ toDo, markDone, setUpdateData, deleteTask }) => {
+  console.log(toDo)
   return(
     <>
+      
+      
       {toDo && toDo
-      .sort((a, b) => a.id > b.id ? 1 : -1)
+      
       .map( (task, index) => {
         return(
           <React.Fragment key={task.id}>
@@ -20,7 +23,7 @@ const ToDo = ({ toDo, markDone, setUpdateData, deleteTask }) => {
               </div>
               <div className="iconsWrap">
                 <span title="Completed / Not Completed"
-                  onClick={ (e) => markDone(task.id) }
+                  onClick={ (e) => markDone(task) }
                 >
                   <FontAwesomeIcon icon={faCircleCheck} />
                 </span>
