@@ -6,8 +6,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 const ToDo = ({ toDo, markDone, setUpdateData, deleteTask }) => {
+  console.log(toDo)
   return(
     <>
+      
+      
       {toDo && toDo
       .sort((a, b) => a.id > b.id ? 1 : -1)
       .map( (task, index) => {
