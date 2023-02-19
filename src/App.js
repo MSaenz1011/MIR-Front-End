@@ -5,6 +5,7 @@ import ToDo from './components/ToDo.jsx'
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
+import Swal from "sweetalert2";
 
 
 //Para chequear si toDo (Linea 21) tiene algo cuando el se le pasa el const de Todo
@@ -64,8 +65,21 @@ function App() {
    .then(() =>{
     setTasklist(taskList.filter(task => task.id !== id))
    })
+
+   showAlert();
     
   }
+
+  //Delete Task Alert 
+const showAlert= () =>{
+ Swal.fire({
+            title: "Hecho",
+            text: "Tarea Eliminada",
+            icon: "success",
+            confirmButtonText: "OK",
+          });
+}
+
 
   // Mark task as done or completed
   /////////////////////////////////
